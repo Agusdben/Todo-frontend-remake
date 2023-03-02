@@ -1,10 +1,21 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import AuthRoute from './components/AuthRoute'
+import UnauthenticatedRoute from './components/UnauthenticatedRoute'
 import HomePage from './pages/Home'
+import Login from './pages/Login'
 
 const routes = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />
+    element: <AuthRoute><HomePage /></AuthRoute>
+  },
+  {
+    path: '/login',
+    element: <UnauthenticatedRoute><Login /></UnauthenticatedRoute>
+  },
+  {
+    path: '*',
+    element: <p>cualquiera</p>
   }
 ])
 
