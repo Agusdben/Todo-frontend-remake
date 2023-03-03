@@ -3,6 +3,6 @@ interface Props {
 }
 
 const SectionTitle: React.FC<Props> = ({ children }) => {
-  return <h2 className='text-xl py-4 font-bold'>{children}</h2>
+  return <h2 className='text-xl pb-4 font-bold'>{children}</h2>
 }
 export default SectionTitle

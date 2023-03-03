@@ -43,14 +43,8 @@ const InputText: React.FC<Props> = ({
           onBlur={wasClicked}
         />
       </div>
-      {error !== '' && (
-        <small
-          className={`${
-            focused ? 'peer-invalid:block peer-valid:hidden' : 'hidden'
-          }`}
-        >
-          {error}
-        </small>
+      {error !== '' && focused && (
+        <small>{error}</small>
       )}
     </div>
   )
