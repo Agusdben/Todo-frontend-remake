@@ -7,6 +7,7 @@ interface Props {
   placeholder: string
   error?: string
   value: string
+  icon?: React.ReactNode
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -16,6 +17,7 @@ const InputText: React.FC<Props> = ({
   required,
   placeholder,
   error = '',
+  icon,
   value,
   onChange
 }) => {
@@ -27,17 +29,20 @@ const InputText: React.FC<Props> = ({
 
   return (
     <div className='flex flex-col gap-1'>
-      <input
-        autoComplete='off'
-        className='bg-transparent outline-none peer border-b-2 p-2 invalid:border-red-900 valid:border-green-900 '
-        value={value}
-        placeholder={`${placeholder} ${required ? '*' : ''}`}
-        name={name}
-        type={type}
-        required={required}
-        onChange={onChange}
-        onBlur={wasClicked}
-      />
+      <div className='flex items-center bg-black-500 border-1 border-r-0 border-primary '>
+        {icon !== null ? <div className='p-2 '>{icon}</div> : null}
+        <input
+          autoComplete='off'
+          className='flex-1 bg-transparent outline-none peer p-2 border-r-4 border-transparent invalid:border-red-700 valid:border-green-700'
+          value={value}
+          placeholder={`${placeholder}${required ? '*' : ''}`}
+          name={name}
+          type={type}
+          required={required}
+          onChange={onChange}
+          onBlur={wasClicked}
+        />
+      </div>
       {error !== '' && (
         <small
           className={`${

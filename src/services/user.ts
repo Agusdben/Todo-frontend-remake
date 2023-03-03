@@ -1,4 +1,4 @@
-import { API_URL } from '../config'
+import { API_URL } from '../config/api'
 import { type LoginFormFields } from '../types/login'
 import { type User } from '../types/user'
 import { mappedUser } from '../utiles'

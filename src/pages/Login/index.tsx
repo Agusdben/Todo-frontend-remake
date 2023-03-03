@@ -1,6 +1,13 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import AppLayout from '../../components/AppLayout'
+import Button from '../../components/Button'
+import ErrorMessage from '../../components/ErrorMessage'
+import LockIcon from '../../components/Icons/LockIncon'
+import UserIcon from '../../components/Icons/UserIcon'
 import InputText from '../../components/InputText'
+import SectionTitle from '../../components/SectionTitle'
+import { colors } from '../../config/theme'
 import { LOGIN_FORM_FIELDS } from '../../constants/login'
 import useUser from '../../hooks/useUser'
 import { type LoginFormFields } from '../../types/login'
@@ -33,29 +40,36 @@ const Login: React.FC = () => {
 
   return (
     <AppLayout>
-      <section className='w-full h-full flex flex-col items-center justify-center'>
-        <h2>Login</h2>
-        <form className='max-w-xs w-full p-4 flex flex-col gap-4' onSubmit={handleLogin}>
-          <InputText
-            name={LOGIN_FORM_FIELDS.username}
-            onChange={handleOnChange}
-            placeholder='username'
-            required
-            type='text'
-            value={formState.username}
-          />
-          <InputText
-            name={LOGIN_FORM_FIELDS.password}
-            onChange={handleOnChange}
-            placeholder='password'
-            required
-            type='password'
-            value={formState.password}
-          />
-          {error !== '' && <strong>{error}</strong>}
-          <button type='submit'>{loading ? 'loading' : 'Login'}</button>
-        </form>
-      </section>
+      <div className='w-full h-full flex flex-col items-center justify-center gap-4'>
+        <section className='max-w-xs w-full p-4 flex flex-col items-center justify-center bg-black-700'>
+          <SectionTitle>Login</SectionTitle>
+          <form className='w-full flex flex-col gap-4' onSubmit={handleLogin}>
+            <InputText
+              icon={<UserIcon fill={colors.primary}/>}
+              name={LOGIN_FORM_FIELDS.username}
+              onChange={handleOnChange}
+              placeholder='username'
+              required
+              type='text'
+              value={formState.username}
+            />
+            <InputText
+              icon={<LockIcon fill={colors.primary}/>}
+              name={LOGIN_FORM_FIELDS.password}
+              onChange={handleOnChange}
+              placeholder='password'
+              required
+              type='password'
+              value={formState.password}
+            />
+            {error !== '' && <ErrorMessage error={error}/>}
+            <Button type='submit'>{loading ? 'loading' : 'Login'}</Button>
+          </form>
+        </section>
+        <section>
+          <Link to={'/register'}>Create an account</Link>
+        </section>
+      </div>
     </AppLayout>
   )
 }

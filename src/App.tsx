@@ -3,6 +3,7 @@ import AuthRoute from './components/AuthRoute'
 import UnauthenticatedRoute from './components/UnauthenticatedRoute'
 import HomePage from './pages/Home'
 import Login from './pages/Login'
+import Register from './pages/Register'
 
 const routes = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ const routes = createBrowserRouter([
   {
     path: '/login',
     element: <UnauthenticatedRoute><Login /></UnauthenticatedRoute>
+  },
+  {
+    path: '/register',
+    element: <UnauthenticatedRoute><Register /></UnauthenticatedRoute>
   },
   {
     path: '*',
