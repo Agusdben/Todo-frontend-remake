@@ -1,7 +1,8 @@
 import type React from 'react'
 import { useState } from 'react'
 import { REGISTER_ERRORS, REGISTER_REGEX } from '../../constants/register'
-import { type KeyInRegisterFormFields, type RegisterFormFields } from '../../types/register'
+import { registerNewUser } from '../../services/user'
+import { type RegisterFormValues, type KeyInRegisterFormFields, type RegisterFormFields } from '../../types/register'
 
 interface ReturnType {
   formState: RegisterFormFields
@@ -9,6 +10,7 @@ interface ReturnType {
   loading: boolean
   handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleConfirmPassword: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleSignin: (e: React.FormEvent<HTMLFormElement>) => void
 }
 
 const useRegisterForm = (): ReturnType => {
@@ -65,12 +67,27 @@ const useRegisterForm = (): ReturnType => {
     })
   }
 
+  const handleSignin = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    const body: RegisterFormValues = {
+      username: formState.username.value,
+      password: formState.password.value,
+      confirmPassword: formState.confirmPassword.value
+    }
+    registerNewUser(body)
+      .catch(error => { setError(error.message) })
+      .finally(() => { setLoading(false) })
+  }
+
   return {
     formState,
     error,
     loading,
     handleOnChange,
-    handleConfirmPassword
+    handleConfirmPassword,
+    handleSignin
   }
 }
 

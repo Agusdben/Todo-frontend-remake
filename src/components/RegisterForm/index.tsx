@@ -8,10 +8,10 @@ import InputText from '../InputText'
 import useRegisterForm from './useRegisterForm'
 
 const RegisterForm: React.FC = () => {
-  const { formState, error, loading, handleOnChange, handleConfirmPassword } = useRegisterForm()
+  const { formState, error, loading, handleOnChange, handleConfirmPassword, handleSignin } = useRegisterForm()
 
   return (
-    <form className='w-full flex flex-col gap-4' onSubmit={() => {}}>
+    <form className='w-full flex flex-col gap-4' onSubmit={handleSignin}>
       <InputText
         icon={<UserIcon fill={colors.primary}/>}
         error={formState.username.error}

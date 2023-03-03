@@ -1,7 +1,9 @@
 import { API_URL } from '../config/api'
 import { type LoginFormFields } from '../types/login'
+import { type RegisterFormValues } from '../types/register'
 import { type User } from '../types/user'
 import { mappedUser } from '../utiles'
+import { handleErrors } from './utiles'
 
 export const loginWithToken = async (token: string): Promise<User> => {
   return await fetch(
@@ -41,9 +43,23 @@ export const loginWithUsernameAndPassword = async (body: LoginFormFields): Promi
     const user = mappedUser(data)
     return user
   }).catch(error => {
-    if (error.message === 'Failed to fetch') {
-      throw new Error('Connection lost')
-    }
-    throw new Error(error.message)
+    return handleErrors(error)
   })
+}
+
+export const registerNewUser = async (body: RegisterFormValues): Promise<void> => {
+  await fetch(`${API_URL}/signin`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const { error } = await res.json()
+        throw new Error(error)
+      }
+    })
+    .catch(error => handleErrors(error))
 }
