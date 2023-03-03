@@ -1,6 +1,9 @@
 import type React from 'react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { LOCAL_STORAGE_KEYS } from '../../constants/localstorage'
 import { REGISTER_ERRORS, REGISTER_REGEX } from '../../constants/register'
+import useUser from '../../hooks/useUser'
 import { registerNewUser } from '../../services/user'
 import { type RegisterFormValues, type KeyInRegisterFormFields, type RegisterFormFields } from '../../types/register'
 
@@ -14,6 +17,8 @@ interface ReturnType {
 }
 
 const useRegisterForm = (): ReturnType => {
+  const { login } = useUser()
+  const navigate = useNavigate()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [formState, setFormState] =
@@ -77,6 +82,14 @@ const useRegisterForm = (): ReturnType => {
       confirmPassword: formState.confirmPassword.value
     }
     registerNewUser(body)
+      .then(() => {
+        window.localStorage.setItem(LOCAL_STORAGE_KEYS.newUser, body.username)
+
+        login({ password: body.password, username: body.username })
+          .catch(error => { console.error(error) })
+
+        navigate('/welcome')
+      })
       .catch(error => { setError(error.message) })
       .finally(() => { setLoading(false) })
   }
