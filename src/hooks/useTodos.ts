@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { TODO_FILTERS } from '../constants/todos'
-import { TODOS } from '../moks/todos'
+import { TodosContext } from '../contexts/TodosContext'
+import { searchTodosOfUser } from '../services/todos'
 import { type TodoIdDone, type TodoId, type Todo, type FilterValue, type TodoDescription } from '../types/todos.d.'
+import useUser from './useUser'
 
 interface ReturnTypes {
   todos: Todo[]
@@ -15,9 +17,21 @@ interface ReturnTypes {
   createTodo: ({ description }: TodoDescription) => void
 }
 
+const cache: { todos: Todo[] | null } = { todos: null }
+
 const useTodos = (): ReturnTypes => {
-  const [todos, setTodos] = useState(TODOS)
-  const [filterSelected, setFilterSelected] = useState<FilterValue>(TODO_FILTERS.all)
+  const { user } = useUser()
+  const { filterSelected, setFilterSelected, setTodos, todos } = useContext(TodosContext)
+  useEffect(() => {
+    if (user === null) return
+    if (cache.todos !== null) {
+      setTodos(cache.todos)
+      return
+    }
+    searchTodosOfUser(user.id, user.token)
+      .then(setTodos)
+      .catch(error => { console.error(error) })
+  }, [user])
 
   const handleFilterChange = (filter: FilterValue): void => {
     setFilterSelected(filter)
@@ -46,6 +60,7 @@ const useTodos = (): ReturnTypes => {
   const activeCount = todos.filter(t => !t.done).length
 
   const filteredTodos = todos.filter(t => {
+    console.log(t)
     if (filterSelected === TODO_FILTERS.active) return !t.done
     if (filterSelected === TODO_FILTERS.done) return t.done
     return t
