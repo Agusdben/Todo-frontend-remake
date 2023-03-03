@@ -9,7 +9,7 @@ const AppLayout: React.FC<Props> = ({ children }) => {
       <header>
         <h1>Hola</h1>
       </header>
-      <main>{children}</main>
+      <main className="p-2">{children}</main>
       <footer>footer</footer>
     </div>
   )

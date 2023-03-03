@@ -8,7 +8,7 @@ const HomePage = (): JSX.Element => {
   const { todos, handleFilterChange, handleClearDone, activeCount, filterSelected, doneCount } = useTodos()
   return (
     <AppLayout>
-      <section>
+      <section className='w-full h-full max-w-md m-auto display flex gap-4 flex-col justify-center'>
         <CreateTodo/>
         <article>
           <Todos todos={todos} />

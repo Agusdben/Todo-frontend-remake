@@ -7,7 +7,7 @@ interface Props {
 
 const Todos: React.FC<Props> = ({ todos }) => {
   return (
-    <ul>
+    <ul className='flex flex-col gap-4'>
       {todos.map(t => (
         <li key={t.id}>
           <Todo

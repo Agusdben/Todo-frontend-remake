@@ -1,9 +1,9 @@
-const LockIcon = (props) => {
+const LockIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="1rem"
-      height="1rem"
+      width="1em"
+      height="1em"
       x="0"
       y="0"
       version="1.1"
