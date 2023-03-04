@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { TODO_FILTERS } from '../constants/todos'
 import { TodosContext } from '../contexts/TodosContext'
-import { createTodo, searchTodosOfUser } from '../services/todos'
+import { createTodo, deleteTodo, searchTodosOfUser } from '../services/todos'
 import { type TodoIdDone, type TodoId, type Todo, type FilterValue, type TodoDescription } from '../types/todos.d.'
 import { textIncludesQuery } from '../utiles'
 import useUser from './useUser'
@@ -13,7 +13,7 @@ interface ReturnTypes {
   doneCount: number
   handleFilterChange: (filter: FilterValue) => void
   handleQuery: (q: string) => void
-  removeTodo: ({ id }: TodoId) => void
+  handleRemoveTodo: ({ id }: TodoId) => Promise<void>
   handleClearDone: () => void
   handleDone: ({ id, done }: TodoIdDone) => void
   handleCreateTodo: ({ description }: TodoDescription) => Promise<void>
@@ -51,8 +51,24 @@ const useTodos = (): ReturnTypes => {
     setTodos(todos => todos.filter(t => !t.done))
   }
 
-  const removeTodo = ({ id }: TodoId): void => {
+  const handleRemoveTodo = async ({ id }: TodoId): Promise<void> => {
+    if (user === null) {
+      return
+    }
+    const [todoDeleted] = todos.filter(t => t.id === id)
+    const todoToDeleteIndex = todos.indexOf(todoDeleted)
     setTodos(todos => todos.filter(t => t.id !== id))
+    try {
+      await deleteTodo({ id, token: user.token })
+    } catch (error: any) {
+      checkTokenError(error.message)
+      setTodos(currentTodos => {
+        const todosFistHalf = currentTodos.filter((_, index) => index < todoToDeleteIndex)
+        const todosSecondHalf = currentTodos.filter((_, index) => index >= todoToDeleteIndex)
+        return [...todosFistHalf, todoDeleted, ...todosSecondHalf]
+      })
+      throw new Error(error.message)
+    }
   }
 
   const handleDone = ({ id, done }: TodoIdDone): void => {
@@ -104,7 +120,7 @@ const useTodos = (): ReturnTypes => {
     doneCount: todos.length - activeCount,
     handleFilterChange,
     handleQuery,
-    removeTodo,
+    handleRemoveTodo,
     handleClearDone,
     handleDone,
     handleCreateTodo

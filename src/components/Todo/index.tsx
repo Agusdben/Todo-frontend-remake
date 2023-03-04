@@ -4,7 +4,11 @@ import CheckIcon from '../Icons/CheckIcon'
 import TrashBinIcon from '../Icons/TrashBinIcon'
 import useTodo from './useTodo'
 
-const Todo: React.FC<TodoType> = ({ id, description, done, user }) => {
+interface Props extends TodoType {
+  onRemoveTodo: () => void
+}
+
+const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo }) => {
   const {
     handleUpdateTodo,
     isEditing,
@@ -49,8 +53,8 @@ const Todo: React.FC<TodoType> = ({ id, description, done, user }) => {
               </p>
             )
       }
-      <button className='p-2 hover:brightness-75'>
-        <TrashBinIcon fill={colors.primary}/>
+      <button className='p-2 hover:brightness-75' onClick={onRemoveTodo}>
+        <TrashBinIcon fill={colors.primary} />
       </button>
     </div>
   )

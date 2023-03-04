@@ -14,6 +14,7 @@ const HomePage = (): JSX.Element => {
     handleCreateTodo,
     handleFilterChange,
     handleClearDone,
+    handleRemoveTodo,
     handleQuery
   } = useTodos()
 
@@ -36,7 +37,7 @@ const HomePage = (): JSX.Element => {
               <p>Todos ({todos.length})</p>
               <p>{activeCount} todo{activeCount > 1 ? 's' : ''} pending</p>
             </div>
-            <Todos todos={todos} />
+            <Todos todos={todos} onRemoveTodo={handleRemoveTodo}/>
           </div>
           {doneCount > 0 && (
             <Button onClick={handleClearDone}>Remove all completed</Button>

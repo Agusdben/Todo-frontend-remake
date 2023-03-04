@@ -1,5 +1,5 @@
 import { API_URL } from '../config/api'
-import { type NewTodo, type Todo } from '../types/todos.d.'
+import { type NewTodo, type Todo, type DeleteTodo, type TodoId } from '../types/todos.d.'
 import { handleErrors } from './utiles'
 
 export const searchTodosOfUser = async (id: string, token: string): Promise<Todo[]> => {
@@ -39,6 +39,26 @@ export const createTodo = async ({ username, description, token }: NewTodo): Pro
         throw new Error(error)
       }
       return data
+    })
+    .catch(error => {
+      return handleErrors(error)
+    })
+}
+
+export const deleteTodo = async ({ id, token }: DeleteTodo): Promise<TodoId> => {
+  return await fetch(`${API_URL}/todos/${id}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: `Bearer ${token}`
+    }
+  })
+    .then(async (res) => {
+      if (!res.ok) {
+        const data = await res.json()
+        const { error } = data
+        throw new Error(error)
+      }
+      return { id }
     })
     .catch(error => {
       return handleErrors(error)

@@ -1,5 +1,5 @@
 import { type TODO_FILTERS } from '../constants/todos'
-import { type UserUsername } from './user'
+import { type UserToken, type UserUsername } from './user'
 
 export interface Todo {
   id: string
@@ -16,6 +16,6 @@ export type TodoIdDone = Pick<Todo, 'id' | 'done'>
 
 export type FilterValue = typeof TODO_FILTERS[keyof typeof TODO_FILTERS]
 
-export interface NewTodo extends TodoDescription, UserUsername {
-  token: string
-}
+export interface NewTodo extends TodoDescription, UserUsername, UserToken {}
+
+export interface DeleteTodo extends TodoId, UserToken {}
