@@ -5,7 +5,7 @@ interface Props {
 
 const AppLayout: React.FC<Props> = ({ children }) => {
   return (
-    <div className="w-screen min-h-screen overflow-x-hidden grid grid-rows-layout bg-black-900 text-white">
+    <div className="max-w-screen min-h-screen overflow-x-hidden grid grid-rows-layout bg-black-900 text-white">
       <header>
         <h1>Hola</h1>
       </header>

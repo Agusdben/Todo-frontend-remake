@@ -7,3 +7,7 @@ export const mappedUser = (obj: any): User => {
     id, todos, token, username
   }
 }
+
+export const textIncludesQuery = ({ text, q }: { text: string, q: string }): boolean => {
+  return text.toLocaleLowerCase().includes(q.toLocaleLowerCase())
+}

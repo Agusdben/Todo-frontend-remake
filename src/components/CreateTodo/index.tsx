@@ -11,7 +11,7 @@ const CreateTodo: React.FC = () => {
   }
 
   return (
-    <form onSubmit={handleOnSubmit} className=' border-1 border-primary text-xl flex bg-black-500 '>
+    <form onSubmit={handleOnSubmit} className=' border-1 border-primary text-xl flex'>
       <div className='flex flex-1'>
         <div className='p-2 grid place-content-center'>
           <NoteIcon width={'1em'} height={'1em'} fill={colors.white} />

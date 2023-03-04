@@ -3,6 +3,7 @@ import { TODO_FILTERS } from '../constants/todos'
 import { TodosContext } from '../contexts/TodosContext'
 import { searchTodosOfUser } from '../services/todos'
 import { type TodoIdDone, type TodoId, type Todo, type FilterValue, type TodoDescription } from '../types/todos.d.'
+import { textIncludesQuery } from '../utiles'
 import useUser from './useUser'
 
 interface ReturnTypes {
@@ -11,6 +12,7 @@ interface ReturnTypes {
   activeCount: number
   doneCount: number
   handleFilterChange: (filter: FilterValue) => void
+  handleQuery: (q: string) => void
   removeTodo: ({ id }: TodoId) => void
   handleClearDone: () => void
   handleDone: ({ id, done }: TodoIdDone) => void
@@ -21,7 +23,8 @@ const cache: { todos: Todo[] | null } = { todos: null }
 
 const useTodos = (): ReturnTypes => {
   const { user } = useUser()
-  const { filterSelected, setFilterSelected, setTodos, todos } = useContext(TodosContext)
+  const { filterSelected, setFilterSelected, setTodos, todos, query, setQuery } = useContext(TodosContext)
+
   useEffect(() => {
     if (user === null) return
     if (cache.todos !== null) {
@@ -35,6 +38,10 @@ const useTodos = (): ReturnTypes => {
 
   const handleFilterChange = (filter: FilterValue): void => {
     setFilterSelected(filter)
+  }
+
+  const handleQuery = (q: string): void => {
+    setQuery(q)
   }
 
   const handleClearDone = (): void => {
@@ -59,11 +66,22 @@ const useTodos = (): ReturnTypes => {
 
   const activeCount = todos.filter(t => !t.done).length
 
-  const filteredTodos = todos.filter(t => {
-    console.log(t)
-    if (filterSelected === TODO_FILTERS.active) return !t.done
-    if (filterSelected === TODO_FILTERS.done) return t.done
-    return t
+  const isTodoMatchingFilter = (todo: Todo): boolean => {
+    if (filterSelected === TODO_FILTERS.active) {
+      return !todo.done
+    }
+    if (filterSelected === TODO_FILTERS.done) {
+      return todo.done
+    }
+    return true
+  }
+
+  const isTodoMatchingQuery = (todo: Todo): boolean => {
+    return query === '' || textIncludesQuery({ text: todo.description, q: query })
+  }
+
+  const filteredTodos = todos.filter(todo => {
+    return isTodoMatchingFilter(todo) && isTodoMatchingQuery(todo)
   })
 
   return {
@@ -72,6 +90,7 @@ const useTodos = (): ReturnTypes => {
     activeCount,
     doneCount: todos.length - activeCount,
     handleFilterChange,
+    handleQuery,
     removeTodo,
     handleClearDone,
     handleDone,
