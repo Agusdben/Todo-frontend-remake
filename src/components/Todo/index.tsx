@@ -1,22 +1,34 @@
 import { colors } from '../../config/theme'
-import { type Todo as TodoType } from '../../types/todos.d.'
+import { type Todo as TodoType, type UpdateTodoFn } from '../../types/todos.d.'
 import CheckIcon from '../Icons/CheckIcon'
 import TrashBinIcon from '../Icons/TrashBinIcon'
 import useTodo from './useTodo'
 
 interface Props extends TodoType {
   onRemoveTodo: () => void
+  onUpdateTodo: UpdateTodoFn
 }
 
-const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo }) => {
+const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUpdateTodo }) => {
   const {
-    handleUpdateTodo,
     isEditing,
+    todoValue,
     handleStopEditing,
     handleTodoValue,
-    todoValue,
     handleStartEditing
   } = useTodo({ id, description, done, user })
+
+  const onSubmitDescription = (): void => {
+
+  }
+
+  const handleDone = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const { checked } = e.target
+    onUpdateTodo({ description, done: checked, id })
+      .catch(error => {
+        console.error(error)
+      })
+  }
 
   return (
     <div className='flex px-2 py-4 items-center gap-4 bg-black-500 break-words break-all'>
@@ -28,12 +40,12 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo }) =>
             </div>
           )
         }
-        <input type='checkbox' className='hidden' checked={done} onChange={e => {}} />
+        <input type='checkbox' className='hidden' checked={done} onChange={handleDone} />
       </label>
       {
         isEditing
           ? (
-              <form className='flex-1' onSubmit={handleUpdateTodo}>
+              <form className='flex-1' onSubmit={onSubmitDescription}>
                 <input
                   className='p-2 bg-transparent outline-none border-1 border-primary w-full'
                   autoFocus
@@ -41,7 +53,6 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo }) =>
                   onChange={handleTodoValue}
                   value={todoValue}
                 />
-                <button type='submit' />
               </form>
             )
           : (

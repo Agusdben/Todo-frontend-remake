@@ -15,7 +15,8 @@ const HomePage = (): JSX.Element => {
     handleFilterChange,
     handleClearDone,
     handleRemoveTodo,
-    handleQuery
+    handleQuery,
+    handleUpdateTodo
   } = useTodos()
 
   return (
@@ -35,9 +36,13 @@ const HomePage = (): JSX.Element => {
           <div className='flex-1 flex flex-col gap-4'>
             <div className='flex justify-between'>
               <p>Todos ({todos.length})</p>
-              <p>{activeCount} todo{activeCount > 1 ? 's' : ''} pending</p>
+              <p>{activeCount} todo{activeCount !== 1 ? 's' : ''} pending</p>
             </div>
-            <Todos todos={todos} onRemoveTodo={handleRemoveTodo}/>
+            <Todos
+              todos={todos}
+              onRemoveTodo={handleRemoveTodo}
+              onUpdateTodo={handleUpdateTodo}
+            />
           </div>
           {doneCount > 0 && (
             <Button onClick={handleClearDone}>Remove all completed</Button>

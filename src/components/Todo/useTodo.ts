@@ -3,7 +3,6 @@ import { useRef, useState } from 'react'
 import { type Todo } from '../../types/todos.d.'
 
 interface ReturnType {
-  handleUpdateTodo: (e?: React.FormEvent<HTMLFormElement>) => void
   isEditing: boolean
   handleStopEditing: () => void
   handleTodoValue: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -33,14 +32,9 @@ const useTodo = ({ id, description, done, user }: Todo): ReturnType => {
       return
     }
     lastValidValue.current = todoValue
-    handleUpdateTodo()
   }
 
-  const handleUpdateTodo = (e?: React.FormEvent<HTMLFormElement>): void => {
-    e?.preventDefault()
-  }
-
-  return { handleUpdateTodo, isEditing, handleStopEditing, handleTodoValue, todoValue, handleStartEditing }
+  return { isEditing, handleStopEditing, handleTodoValue, todoValue, handleStartEditing }
 }
 
 export default useTodo

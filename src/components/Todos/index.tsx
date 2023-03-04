@@ -1,12 +1,20 @@
-import { type TodoId, type Todo as TodoType } from '../../types/todos.d.'
+import { type TodoId, type Todo as TodoType, type UpdateTodoFn, type RemoveTodoFn } from '../../types/todos.d.'
 import Todo from '../Todo'
 
 interface Props {
   todos: TodoType[]
-  onRemoveTodo: ({ id }: TodoId) => void
+  onRemoveTodo: RemoveTodoFn
+  onUpdateTodo: UpdateTodoFn
 }
 
-const Todos: React.FC<Props> = ({ todos, onRemoveTodo }) => {
+const Todos: React.FC<Props> = ({ todos, onRemoveTodo, onUpdateTodo }) => {
+  const handleRemoveTodo = ({ id }: TodoId): void => {
+    onRemoveTodo({ id })
+      .catch(error => {
+        console.error(error)
+      })
+  }
+
   return (
     <ul className='flex flex-col gap-4 overflow-x-hidden'>
       {todos.map((t, index) => {
@@ -14,7 +22,8 @@ const Todos: React.FC<Props> = ({ todos, onRemoveTodo }) => {
         return (
           <li key={t.id} style={{ animationDuration: `${delay}ms` }} className='animate-to-left'>
             <Todo
-              onRemoveTodo={() => { onRemoveTodo({ id: t.id }) }}
+              onRemoveTodo={() => { handleRemoveTodo({ id: t.id }) }}
+              onUpdateTodo={onUpdateTodo}
               id={t.id}
               description={t.description}
               done={t.done}
