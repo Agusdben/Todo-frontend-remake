@@ -17,6 +17,15 @@ module.exports = {
       },
       gridTemplateRows: {
         layout: 'auto 1fr auto'
+      },
+      animation: {
+        'to-left': 'to-left 1s linear'
+      },
+      keyframes: {
+        'to-left': {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' }
+        }
       }
     }
   },

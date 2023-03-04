@@ -6,14 +6,23 @@ import Todos from '../../components/Todos'
 import useTodos from '../../hooks/useTodos'
 
 const HomePage = (): JSX.Element => {
-  const { todos, handleFilterChange, handleClearDone, activeCount, filterSelected, doneCount, handleQuery } = useTodos()
+  const {
+    todos,
+    activeCount,
+    filterSelected,
+    doneCount,
+    handleCreateTodo,
+    handleFilterChange,
+    handleClearDone,
+    handleQuery
+  } = useTodos()
 
   return (
     <AppLayout>
       <section className='w-full h-full m-auto display flex flex-col justify-center p-4'>
         <article className='relative max-w-lg h-full w-full m-auto flex flex-col gap-8'>
           <div className='sticky top-0 left-0 z-20'>
-            <CreateTodo/>
+            <CreateTodo onSubmit={handleCreateTodo}/>
           </div>
           <div className='flex flex-col justify-center gap-4'>
             <Filters

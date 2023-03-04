@@ -49,7 +49,9 @@ const Todo: React.FC<TodoType> = ({ id, description, done, user }) => {
               </p>
             )
       }
-      <button className='p-2 hover:brightness-75'><TrashBinIcon fill={colors.primary}/></button>
+      <button className='p-2 hover:brightness-75'>
+        <TrashBinIcon fill={colors.primary}/>
+      </button>
     </div>
   )
 }

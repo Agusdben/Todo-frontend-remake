@@ -1,5 +1,5 @@
 import { API_URL } from '../config/api'
-import { type Todo } from '../types/todos.d.'
+import { type NewTodo, type Todo } from '../types/todos.d.'
 import { handleErrors } from './utiles'
 
 export const searchTodosOfUser = async (id: string, token: string): Promise<Todo[]> => {
@@ -13,8 +13,30 @@ export const searchTodosOfUser = async (id: string, token: string): Promise<Todo
     .then(async res => {
       const data = await res.json()
       if (!res.ok) {
-        const { message } = data
-        throw new Error(message)
+        const { error } = data
+        throw new Error(error)
+      }
+      return data
+    })
+    .catch(error => {
+      return handleErrors(error)
+    })
+}
+
+export const createTodo = async ({ username, description, token }: NewTodo): Promise<Todo> => {
+  return await fetch(`${API_URL}/todos`, {
+    method: 'POST',
+    body: JSON.stringify({ username, description }),
+    headers: {
+      authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(async (res) => {
+      const data = await res.json()
+      if (!res.ok) {
+        const { error } = data
+        throw new Error(error)
       }
       return data
     })

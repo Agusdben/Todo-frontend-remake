@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 import { TODO_FILTERS } from '../constants/todos'
 import { TodosContext } from '../contexts/TodosContext'
-import { searchTodosOfUser } from '../services/todos'
+import { createTodo, searchTodosOfUser } from '../services/todos'
 import { type TodoIdDone, type TodoId, type Todo, type FilterValue, type TodoDescription } from '../types/todos.d.'
 import { textIncludesQuery } from '../utiles'
 import useUser from './useUser'
@@ -16,13 +16,13 @@ interface ReturnTypes {
   removeTodo: ({ id }: TodoId) => void
   handleClearDone: () => void
   handleDone: ({ id, done }: TodoIdDone) => void
-  createTodo: ({ description }: TodoDescription) => void
+  handleCreateTodo: ({ description }: TodoDescription) => Promise<void>
 }
 
 const cache: { todos: Todo[] | null } = { todos: null }
 
 const useTodos = (): ReturnTypes => {
-  const { user } = useUser()
+  const { user, checkTokenError } = useUser()
   const { filterSelected, setFilterSelected, setTodos, todos, query, setQuery } = useContext(TodosContext)
 
   useEffect(() => {
@@ -33,7 +33,10 @@ const useTodos = (): ReturnTypes => {
     }
     searchTodosOfUser(user.id, user.token)
       .then(setTodos)
-      .catch(error => { console.error(error) })
+      .catch(error => {
+        console.error(error)
+        checkTokenError(error.message)
+      })
   }, [user])
 
   const handleFilterChange = (filter: FilterValue): void => {
@@ -60,8 +63,18 @@ const useTodos = (): ReturnTypes => {
     )
   }
 
-  const createTodo = ({ description }: TodoDescription): void => {
-
+  const handleCreateTodo = async ({ description }: TodoDescription): Promise<void> => {
+    if (user === null) {
+      return
+    }
+    createTodo({ username: user.username, description, token: user.token })
+      .then(todo => {
+        setTodos(todos => [...todos, todo])
+      })
+      .catch(error => {
+        checkTokenError(error.message)
+        throw new Error(error.message)
+      })
   }
 
   const activeCount = todos.filter(t => !t.done).length
@@ -94,7 +107,7 @@ const useTodos = (): ReturnTypes => {
     removeTodo,
     handleClearDone,
     handleDone,
-    createTodo
+    handleCreateTodo
   }
 }
 
