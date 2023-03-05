@@ -18,8 +18,22 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
     handleStartEditing
   } = useTodo({ id, description, done, user })
 
-  const onSubmitDescription = (): void => {
+  const handleOnblur = (): void => {
+    onSubmitDescription()
+  }
 
+  const onSubmitDescription = (e?: React.FormEvent<HTMLFormElement>): void => {
+    handleStopEditing()
+
+    e?.preventDefault()
+    if (todoValue === '') {
+      return
+    }
+
+    onUpdateTodo({ description: todoValue, done, id })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   const handleDone = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -49,9 +63,10 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
                 <input
                   className='p-2 bg-transparent outline-none border-1 border-primary w-full'
                   autoFocus
-                  onBlur={handleStopEditing}
+                  onBlur={handleOnblur}
                   onChange={handleTodoValue}
                   value={todoValue}
+                  required
                 />
               </form>
             )
@@ -60,7 +75,7 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
                 onClick={handleStartEditing}
                 className={`p-2 flex-1 flex border-1 border-transparent ${done ? 'line-through opacity-50' : 'hover:bg-black-700 cursor-text'}`}
               >
-                {todoValue}
+                {description}
               </p>
             )
       }

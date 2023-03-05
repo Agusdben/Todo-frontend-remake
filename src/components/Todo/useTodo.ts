@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { type Todo } from '../../types/todos.d.'
 
 interface ReturnType {
@@ -13,7 +13,6 @@ interface ReturnType {
 const useTodo = ({ id, description, done, user }: Todo): ReturnType => {
   const [isEditing, setIsEditing] = useState(false)
   const [todoValue, setTodoValue] = useState(description)
-  const lastValidValue = useRef(description)
 
   const handleTodoValue = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value } = e.target
@@ -28,10 +27,8 @@ const useTodo = ({ id, description, done, user }: Todo): ReturnType => {
   const handleStopEditing = (): void => {
     setIsEditing(false)
     if (todoValue === '') {
-      setTodoValue(lastValidValue.current)
-      return
+      setTodoValue(description)
     }
-    lastValidValue.current = todoValue
   }
 
   return { isEditing, handleStopEditing, handleTodoValue, todoValue, handleStartEditing }
