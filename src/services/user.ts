@@ -2,8 +2,8 @@ import { API_URL } from '../config/api'
 import { type LoginFormFields } from '../types/login'
 import { type RegisterFormValues } from '../types/register'
 import { type User } from '../types/user'
-import { mappedUser } from '../utiles'
-import { handleErrors } from './utiles'
+import { mappedUser } from '../utilities'
+import { handleErrors } from './utilities'
 
 export const loginWithToken = async (token: string): Promise<User> => {
   return await fetch(

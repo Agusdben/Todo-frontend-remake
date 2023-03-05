@@ -2,8 +2,8 @@ import { useContext, useEffect } from 'react'
 import { TODO_FILTERS } from '../constants/todos'
 import { TodosContext } from '../contexts/TodosContext'
 import { createTodo, deleteTodo, searchTodosOfUser, updateTodo } from '../services/todos'
-import { type TodoId, type Todo, type FilterValue, type TodoDescription, type TodoIdDoneDescription, type UpdateTodoFn, type RemoveTodoFn } from '../types/todos.d.'
-import { textIncludesQuery } from '../utiles'
+import { type TodoId, type Todo, type FilterValue, type TodoDescription, type TodoIdDoneDescription, type UpdateTodoFn, type RemoveTodoFn, type TodoToDelete } from '../types/todos.d.'
+import { insertTodoInIndex, textIncludesQuery } from '../utilities'
 import useUser from './useUser'
 
 interface ReturnTypes {
@@ -13,7 +13,7 @@ interface ReturnTypes {
   doneCount: number
   handleFilterChange: (filter: FilterValue) => void
   handleQuery: (q: string) => void
-  handleClearDone: () => void
+  handleClearDone: () => Promise<void>
   handleUpdateTodo: UpdateTodoFn
   handleRemoveTodo: RemoveTodoFn
   handleCreateTodo: ({ description }: TodoDescription) => Promise<void>
@@ -47,8 +47,29 @@ const useTodos = (): ReturnTypes => {
     setQuery(q)
   }
 
-  const handleClearDone = (): void => {
+  const handleClearDone = async (): Promise<void> => {
+    if (user === null) return
     setTodos(todos => todos.filter(t => !t.done))
+
+    const todosToDelete = todos.reduce((acc: TodoToDelete[], t: Todo, index) => {
+      if (t.done) {
+        acc.push({ ...t, index })
+      }
+      return acc
+    }, [])
+
+    const promises = todosToDelete.map(async t => await deleteTodo({ id: t.id, token: user.token }))
+    const responses = await Promise.allSettled(promises)
+
+    responses.forEach((res, i) => {
+      if (res.status === 'rejected') {
+        const todoNotDeleted = todosToDelete[i]
+        const indexOfTodoNotDeleted = todoNotDeleted.index
+        setTodos(currentTodos => {
+          return insertTodoInIndex({ insertInIndex: indexOfTodoNotDeleted, todo: todoNotDeleted, todos: currentTodos })
+        })
+      }
+    })
   }
 
   const handleRemoveTodo = async ({ id }: TodoId): Promise<void> => {
@@ -64,9 +85,7 @@ const useTodos = (): ReturnTypes => {
     } catch (error: any) {
       checkTokenError(error.message)
       setTodos(currentTodos => {
-        const todosFistHalf = currentTodos.filter((_, index) => index < todoToDeleteIndex)
-        const todosSecondHalf = currentTodos.filter((_, index) => index >= todoToDeleteIndex)
-        return [...todosFistHalf, todoDeleted, ...todosSecondHalf]
+        return insertTodoInIndex({ insertInIndex: todoToDeleteIndex, todo: todoDeleted, todos: currentTodos })
       })
       throw new Error('Failed to remove todo')
     }

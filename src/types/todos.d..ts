@@ -25,3 +25,7 @@ export interface NewTodo extends TodoDescription, UserUsername, UserToken {}
 export interface DeleteTodo extends TodoId, UserToken {}
 
 export interface UpdateTodo extends TodoId, TodoDescription, TodoDone, UserToken {}
+
+export interface TodoToDelete extends Todo {
+  index: number
+}

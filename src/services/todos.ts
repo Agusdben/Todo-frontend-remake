@@ -1,6 +1,6 @@
 import { API_URL } from '../config/api'
 import { type NewTodo, type Todo, type DeleteTodo, type TodoId, type UpdateTodo } from '../types/todos.d.'
-import { handleErrors } from './utiles'
+import { handleErrors } from './utilities'
 
 export const searchTodosOfUser = async (id: string, token: string): Promise<Todo[]> => {
   const URL = `${API_URL}/todos/${id}`
