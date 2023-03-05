@@ -24,6 +24,9 @@ const CreateTodo: React.FC<Props> = ({ onSubmit }) => {
       return
     }
     onSubmit({ description: todoValue })
+      .then(() => {
+        setTodoValue('')
+      })
       .catch(error => {
         console.error(error)
         setError(error.message)
@@ -46,6 +49,7 @@ const CreateTodo: React.FC<Props> = ({ onSubmit }) => {
             <NoteIcon width={'1em'} height={'1em'} fill={colors.white} />
           </div>
           <input
+            autoFocus
             name='todo'
             onChange={handleOnChange}
             placeholder="What do you want to do?"
