@@ -2,7 +2,9 @@ import AppLayout from '../../components/AppLayout'
 import Button from '../../components/Button'
 import CreateTodo from '../../components/CreateTodo'
 import Filters from '../../components/Filters'
+import ModalDelete from '../../components/ModalDelete'
 import Todos from '../../components/Todos'
+import useModal from '../../hooks/useModal'
 import useTodos from '../../hooks/useTodos'
 
 const HomePage = (): JSX.Element => {
@@ -16,14 +18,17 @@ const HomePage = (): JSX.Element => {
     handleClearDone,
     handleRemoveTodo,
     handleQuery,
-    handleUpdateTodo
+    handleUpdateTodo,
+    getTodoDoneDescription
   } = useTodos()
+
+  const modalDeleteAllDone = useModal({ title: 'Delete todos' })
 
   return (
     <AppLayout>
       <section className='w-full h-full m-auto display flex flex-col justify-center p-4'>
         <article className='relative max-w-lg h-full w-full m-auto flex flex-col gap-8'>
-          <div className='sticky top-0 left-0 z-20'>
+          <div className='sticky top-0'>
             <CreateTodo onSubmit={handleCreateTodo}/>
           </div>
           <div className='flex flex-col justify-center gap-4'>
@@ -45,10 +50,21 @@ const HomePage = (): JSX.Element => {
             />
           </div>
           {doneCount > 0 && (
-            <Button onClick={handleClearDone}>Remove all completed</Button>
+            <Button
+              onClick={modalDeleteAllDone.handleModal}
+            >
+              Remove all completed
+            </Button>
           )}
         </article>
       </section>
+      <ModalDelete
+        modal={modalDeleteAllDone}
+        descriptions={getTodoDoneDescription()}
+        type='todo'
+        onCancel={modalDeleteAllDone.handleModal}
+        onDelete={handleClearDone}
+      />
     </AppLayout>
   )
 }

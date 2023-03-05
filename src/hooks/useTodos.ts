@@ -13,10 +13,11 @@ interface ReturnTypes {
   doneCount: number
   handleFilterChange: (filter: FilterValue) => void
   handleQuery: (q: string) => void
-  handleClearDone: () => Promise<void>
+  handleClearDone: () => void
   handleUpdateTodo: UpdateTodoFn
   handleRemoveTodo: RemoveTodoFn
   handleCreateTodo: ({ description }: TodoDescription) => Promise<void>
+  getTodoDoneDescription: () => string[]
 }
 
 const cache: { todos: Todo[] | null } = { todos: null }
@@ -47,7 +48,7 @@ const useTodos = (): ReturnTypes => {
     setQuery(q)
   }
 
-  const handleClearDone = async (): Promise<void> => {
+  const handleClearDone = (): void => {
     if (user === null) return
     setTodos(todos => todos.filter(t => !t.done))
 
@@ -59,16 +60,19 @@ const useTodos = (): ReturnTypes => {
     }, [])
 
     const promises = todosToDelete.map(async t => await deleteTodo({ id: t.id, token: user.token }))
-    const responses = await Promise.allSettled(promises)
-
-    responses.forEach((res, i) => {
-      if (res.status === 'rejected') {
-        const todoNotDeleted = todosToDelete[i]
-        const indexOfTodoNotDeleted = todoNotDeleted.index
-        setTodos(currentTodos => {
-          return insertTodoInIndex({ insertInIndex: indexOfTodoNotDeleted, todo: todoNotDeleted, todos: currentTodos })
-        })
-      }
+    Promise.allSettled(promises).then((responses) => {
+      responses.forEach((res, i) => {
+        if (res.status === 'rejected') {
+          checkTokenError(res.reason.message)
+          const todoNotDeleted = todosToDelete[i]
+          const indexOfTodoNotDeleted = todoNotDeleted.index
+          setTodos(currentTodos => {
+            return insertTodoInIndex({ insertInIndex: indexOfTodoNotDeleted, todo: todoNotDeleted, todos: currentTodos })
+          })
+        }
+      })
+    }).catch(error => {
+      console.error(error)
     })
   }
 
@@ -149,6 +153,14 @@ const useTodos = (): ReturnTypes => {
     return isTodoMatchingFilter(todo) && isTodoMatchingQuery(todo)
   })
 
+  const getTodoDoneDescription = (): string[] => todos.reduce((descriptions: string[], t) => {
+    if (t.done) {
+      descriptions.push(t.description)
+    }
+
+    return descriptions
+  }, [])
+
   return {
     todos: filteredTodos,
     filterSelected,
@@ -159,7 +171,8 @@ const useTodos = (): ReturnTypes => {
     handleRemoveTodo,
     handleClearDone,
     handleUpdateTodo,
-    handleCreateTodo
+    handleCreateTodo,
+    getTodoDoneDescription
   }
 }
 

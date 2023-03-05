@@ -1,7 +1,9 @@
 import { colors } from '../../config/theme'
+import useModal from '../../hooks/useModal'
 import { type Todo as TodoType, type UpdateTodoFn } from '../../types/todos.d.'
 import CheckIcon from '../Icons/CheckIcon'
 import TrashBinIcon from '../Icons/TrashBinIcon'
+import ModalDelete from '../ModalDelete'
 import useTodo from './useTodo'
 
 interface Props extends TodoType {
@@ -17,6 +19,8 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
     handleTodoValue,
     handleStartEditing
   } = useTodo({ id, description, done, user })
+
+  const modalDelete = useModal({ title: 'Delete todo' })
 
   const handleOnblur = (): void => {
     onSubmitDescription()
@@ -79,9 +83,16 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
               </p>
             )
       }
-      <button className='p-2 hover:brightness-75' onClick={onRemoveTodo}>
+      <button className='p-2 hover:brightness-75' onClick={modalDelete.handleModal}>
         <TrashBinIcon fill={colors.primary} />
       </button>
+      <ModalDelete
+        modal={modalDelete}
+        descriptions={[description]}
+        type={'todo'}
+        onCancel={modalDelete.handleModal}
+        onDelete={onRemoveTodo}
+      />
     </div>
   )
 }

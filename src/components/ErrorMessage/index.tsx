@@ -6,7 +6,7 @@ interface Props {
 
 const ErrorMessage: React.FC<Props> = ({ error }) => {
   return (
-    <strong className='text-red-700'>{error}</strong>
+    <strong className='text-red'>{error}</strong>
   )
 }
 

@@ -33,7 +33,7 @@ const InputText: React.FC<Props> = ({
         {icon !== null ? <div className='p-2 '>{icon}</div> : null}
         <input
           autoComplete='off'
-          className='flex-1 bg-transparent outline-none peer p-2 border-r-4 border-transparent invalid:border-red-700 valid:border-green-700'
+          className='flex-1 bg-transparent outline-none peer p-2 border-r-4 border-transparent invalid:border-red valid:border-green-700'
           value={value}
           placeholder={`${placeholder}${required ? '*' : ''}`}
           name={name}
