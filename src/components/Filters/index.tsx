@@ -20,7 +20,7 @@ const Filters: React.FC<Props> = ({ filterSelected, onFilterChange, onQueryChang
   }
 
   return (
-    <ul className='flex gap-5 items-center flex-wrap'>
+    <ul className='flex gap-y-2 gap-x-5 items-center flex-wrap'>
       {Object.values(TODO_FILTERS).map((value) => (
         <li key={value}>
           <button

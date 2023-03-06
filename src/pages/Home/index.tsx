@@ -7,8 +7,10 @@ import ModalDelete from '../../components/ModalDelete'
 import Todos from '../../components/Todos'
 import useModal from '../../hooks/useModal'
 import useTodos from '../../hooks/useTodos'
+import useUser from '../../hooks/useUser'
 
 const HomePage = (): JSX.Element => {
+  const { user } = useUser()
   const {
     todos,
     activeCount,
@@ -28,8 +30,11 @@ const HomePage = (): JSX.Element => {
 
   return (
     <AppLayout>
-      <section className='w-full h-full m-auto display flex flex-col justify-center p-4'>
-        <article className='relative max-w-lg h-full w-full m-auto flex flex-col gap-8'>
+      <section className='w-full h-full m-auto display flex flex-col justify-center'>
+        <article className='relative max-w-lg h-full w-full m-auto flex flex-col gap-4'>
+          <div>
+            <p>Nice to see you again <span className='font-bold text-primary'>{user?.username}</span></p>
+          </div>
           <div className='sticky top-0'>
             <CreateTodo onSubmit={handleCreateTodo}/>
           </div>
@@ -52,11 +57,13 @@ const HomePage = (): JSX.Element => {
             />
           </div>
           {doneCount > 0 && (
-            <Button
-              onClick={modalDeleteAllDone.handleModal}
-            >
-              Remove all completed
-            </Button>
+            <div className='ml-auto'>
+              <Button
+                onClick={modalDeleteAllDone.handleModal}
+              >
+                Remove all completed
+              </Button>
+            </div>
           )}
         </article>
       </section>

@@ -9,7 +9,7 @@ const AppLayout: React.FC<Props> = ({ children }) => {
   return (
     <div className="max-w-screen min-h-screen overflow-x-hidden grid gap-4 grid-rows-layout bg-black-900 text-white">
       <AppHeader />
-      <main className="p-2">{children}</main>
+      <main className="px-2">{children}</main>
       <AppFooter />
     </div>
   )

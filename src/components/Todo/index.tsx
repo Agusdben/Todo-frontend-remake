@@ -2,6 +2,7 @@ import { colors } from '../../config/theme'
 import useModal from '../../hooks/useModal'
 import { type Todo as TodoType, type UpdateTodoFn } from '../../types/todos.d.'
 import CheckIcon from '../Icons/CheckIcon'
+import PenToSquareIcon from '../Icons/PenToSquareIcon'
 import TrashBinIcon from '../Icons/TrashBinIcon'
 import ModalDelete from '../ModalDelete'
 import useTodo from './useTodo'
@@ -41,7 +42,7 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
   }
 
   return (
-    <div className='flex px-2 py-4 items-center gap-4 bg-black-500 break-words break-all'>
+    <div className='flex p-2 items-center gap-4 bg-black-500 break-words break-all'>
       <label className={`p-3 border-1 border-primary w-4 h-4 relative cursor-pointer ${!done ? 'hover:bg-primary' : ''}`}>
         {
           done && (
@@ -77,6 +78,9 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
       }
       <button className='p-2 hover:brightness-75' onClick={modalDelete.handleModal}>
         <TrashBinIcon fill={colors.primary} />
+      </button>
+      <button className='p-2 hover:brightness-75' onClick={handleStartEditing}>
+        <PenToSquareIcon fill={colors.primary} />
       </button>
       <ModalDelete
         modal={modalDelete}
