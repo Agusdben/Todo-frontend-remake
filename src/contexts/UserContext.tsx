@@ -40,15 +40,6 @@ export const UserContextProvider: React.FC<Props> = ({ children }) => {
     })
   }, [])
 
-  useEffect(() => {
-    if (user != null) {
-      window.localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, user.token)
-    }
-    if (user === null) {
-      window.localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN)
-    }
-  }, [user])
-
   return (
     <UserContext.Provider value={{ user, authenticating, setUser }}>
       {children}
