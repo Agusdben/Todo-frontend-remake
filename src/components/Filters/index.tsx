@@ -1,5 +1,7 @@
-import { FILTER_BUTTONS } from '../../constants/todos'
+import { colors } from '../../config/theme'
+import { TODO_FILTERS } from '../../constants/todos'
 import { type FilterValue } from '../../types/todos.d.'
+import MagnifyingGlassIcon from '../Icons/MagnifyingGlassIcon'
 
 interface Props {
   onFilterChange: (filter: FilterValue) => void
@@ -8,8 +10,7 @@ interface Props {
 }
 
 const Filters: React.FC<Props> = ({ filterSelected, onFilterChange, onQueryChange }) => {
-  const handleOnFilterSelected = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, key: FilterValue): void => {
-    e.preventDefault()
+  const handleOnFilterSelected = (key: FilterValue): void => {
     onFilterChange(key)
   }
 
@@ -20,24 +21,26 @@ const Filters: React.FC<Props> = ({ filterSelected, onFilterChange, onQueryChang
 
   return (
     <ul className='flex gap-5 items-center flex-wrap'>
-      {Object.entries(FILTER_BUTTONS).map(([key, { literal, href }]) => (
-        <li key={key} className=''>
-          <a
-            className={`p-2 ${filterSelected === key ? 'border-1 border-primary' : ''}`}
-            href={href}
-            onClick={(e) => { handleOnFilterSelected(e, key as FilterValue) }}
+      {Object.values(TODO_FILTERS).map((value) => (
+        <li key={value} className=''>
+          <button
+            className={`p-2 hover:border-1 hover:border-primary ${filterSelected === value ? 'border-1 border-primary' : 'border-1 border-transparent '}`}
+            onClick={() => { handleOnFilterSelected(value as FilterValue) }}
           >
-            {literal }
-          </a>
+            {value}
+          </button>
         </li>
       ))}
-      <li className='flex-1'>
+      <li className='flex-1 focus-within:shadow-md focus-within:shadow-primary flex items-center'>
         <input
           onChange={handleOnQuery}
           type="text"
-          className='w-full min-w-[200px] bg-transparent border-1 border-primary p-2 outline-none'
+          className='w-full min-w-[200px] bg-transparent border-1 border-primary p-2 outline-none '
           placeholder='Search todo'
         />
+        <div className=' px-2 self-stretch grid place-content-center bg-primary'>
+          <MagnifyingGlassIcon fill={colors.black} className='text-2xl'/>
+        </div>
       </li>
     </ul>
   )
