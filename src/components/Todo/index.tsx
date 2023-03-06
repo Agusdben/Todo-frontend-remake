@@ -28,24 +28,16 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
 
   const onSubmitDescription = (e?: React.FormEvent<HTMLFormElement>): void => {
     handleStopEditing()
-
     e?.preventDefault()
     if (todoValue === '') {
       return
     }
-
     onUpdateTodo({ description: todoValue, done, id })
-      .catch((error) => {
-        console.error(error)
-      })
   }
 
   const handleDone = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { checked } = e.target
     onUpdateTodo({ description, done: checked, id })
-      .catch(error => {
-        console.error(error)
-      })
   }
 
   return (

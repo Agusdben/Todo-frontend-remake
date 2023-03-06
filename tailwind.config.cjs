@@ -20,12 +20,17 @@ module.exports = {
         layout: 'auto 1fr auto'
       },
       animation: {
-        'to-left': 'to-left 1s linear'
+        'to-left': 'to-left 1s linear',
+        alert: 'alert 8s linear forwards'
       },
       keyframes: {
         'to-left': {
           '0%': { transform: 'translateX(100%)' },
           '100%': { transform: 'translateX(0)' }
+        },
+        alert: {
+          '10%,70%': { bottom: '0' },
+          '100%': { bottom: '-100%' }
         }
       }
     }

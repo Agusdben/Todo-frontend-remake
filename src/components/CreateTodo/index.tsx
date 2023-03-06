@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { colors } from '../../config/theme'
 import { type TodoDescription } from '../../types/todos.d.'
-import ErrorMessage from '../ErrorMessage'
 import NoteIcon from '../Icons/NoteIcon'
 import PaperPlaneIcon from '../Icons/PaperPlaneIcon'
 
@@ -12,14 +11,11 @@ interface Props {
 const CreateTodo: React.FC<Props> = ({ onSubmit }) => {
   const [todoValue, setTodoValue] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     setLoading(true)
-    setError('')
     if (todoValue === '') {
-      setError('Empty value')
       setLoading(false)
       return
     }
@@ -27,17 +23,10 @@ const CreateTodo: React.FC<Props> = ({ onSubmit }) => {
       .then(() => {
         setTodoValue('')
       })
-      .catch(error => {
-        console.error(error)
-        setError(error.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+      .finally(() => { setLoading(false) })
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setError('')
     setTodoValue(e.target.value)
   }
 
@@ -63,7 +52,6 @@ const CreateTodo: React.FC<Props> = ({ onSubmit }) => {
           <PaperPlaneIcon fill={colors.black}/>
         </button>
       </form>
-      {error !== '' && <ErrorMessage error={error}/>}
       {loading && <p className='text-primary'>Adding...</p>}
     </div>
   )

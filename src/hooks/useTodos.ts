@@ -2,8 +2,10 @@ import { useContext, useEffect } from 'react'
 import { TODO_FILTERS } from '../constants/todos'
 import { TodosContext } from '../contexts/TodosContext'
 import { createTodo, deleteTodo, searchTodosOfUser, updateTodo } from '../services/todos'
+import { type Alert } from '../types/alert'
 import { type TodoId, type Todo, type FilterValue, type TodoDescription, type TodoIdDoneDescription, type UpdateTodoFn, type RemoveTodoFn, type TodoToDelete } from '../types/todos.d.'
 import { insertTodoInIndex, textIncludesQuery } from '../utilities'
+import useAlert from './useAlert'
 import useUser from './useUser'
 
 interface ReturnTypes {
@@ -18,6 +20,7 @@ interface ReturnTypes {
   handleRemoveTodo: RemoveTodoFn
   handleCreateTodo: ({ description }: TodoDescription) => Promise<void>
   getTodoDoneDescription: () => string[]
+  alert: Alert
 }
 
 const cache: { todos: Todo[] | null } = { todos: null }
@@ -25,6 +28,7 @@ const cache: { todos: Todo[] | null } = { todos: null }
 const useTodos = (): ReturnTypes => {
   const { user, checkTokenError } = useUser()
   const { filterSelected, setFilterSelected, setTodos, todos, query, setQuery } = useContext(TodosContext)
+  const alert = useAlert()
 
   useEffect(() => {
     if (user === null) return
@@ -60,23 +64,36 @@ const useTodos = (): ReturnTypes => {
     }, [])
 
     const promises = todosToDelete.map(async t => await deleteTodo({ id: t.id, token: user.token }))
-    Promise.allSettled(promises).then((responses) => {
-      responses.forEach((res, i) => {
-        if (res.status === 'rejected') {
-          checkTokenError(res.reason.message)
-          const todoNotDeleted = todosToDelete[i]
-          const indexOfTodoNotDeleted = todoNotDeleted.index
-          setTodos(currentTodos => {
-            return insertTodoInIndex({ insertInIndex: indexOfTodoNotDeleted, todo: todoNotDeleted, todos: currentTodos })
-          })
+
+    Promise.allSettled(promises)
+      .then((responses) => {
+        let countNotDeleted: number = 0
+        responses.forEach((res, i) => {
+          if (res.status === 'rejected') {
+            countNotDeleted++
+            checkTokenError(res.reason.message)
+            const todoNotDeleted = todosToDelete[i]
+            const indexOfTodoNotDeleted = todoNotDeleted.index
+            setTodos(currentTodos => {
+              return insertTodoInIndex({ insertInIndex: indexOfTodoNotDeleted, todo: todoNotDeleted, todos: currentTodos })
+            })
+          }
+        })
+
+        if (countNotDeleted > 0) {
+          const message = `${countNotDeleted} todos not deleted`
+          alert.displayMessage({ message })
+          console.error(message)
         }
       })
-    }).catch(error => {
-      console.error(error)
-    })
+      .catch(() => {
+        const message = 'Failed on delete all todos'
+        alert.displayMessage({ message })
+        console.error(message)
+      })
   }
 
-  const handleRemoveTodo = async ({ id }: TodoId): Promise<void> => {
+  const handleRemoveTodo = ({ id }: TodoId): void => {
     if (user === null) return
 
     const [todoDeleted] = todos.filter(t => t.id === id)
@@ -84,18 +101,22 @@ const useTodos = (): ReturnTypes => {
 
     setTodos(todos => todos.filter(t => t.id !== id))
 
-    try {
-      await deleteTodo({ id, token: user.token })
-    } catch (error: any) {
-      checkTokenError(error.message)
-      setTodos(currentTodos => {
-        return insertTodoInIndex({ insertInIndex: todoToDeleteIndex, todo: todoDeleted, todos: currentTodos })
+    deleteTodo({ id, token: user.token })
+      .then(() => {
+        alert.displayMessage({ message: 'Todo deleted successfully' })
       })
-      throw new Error('Failed to remove todo')
-    }
+      .catch(error => {
+        checkTokenError(error.message)
+        setTodos(currentTodos => {
+          return insertTodoInIndex({ insertInIndex: todoToDeleteIndex, todo: todoDeleted, todos: currentTodos })
+        })
+        const message = 'Failed to remove todo'
+        alert.displayMessage({ message })
+        console.error(message)
+      })
   }
 
-  const handleUpdateTodo = async ({ id, done, description }: TodoIdDoneDescription): Promise<void> => {
+  const handleUpdateTodo = ({ id, done, description }: TodoIdDoneDescription): void => {
     if (user === null) return
 
     const [todoBeforeUpdate] = todos.filter(t => t.id === id)
@@ -107,7 +128,7 @@ const useTodos = (): ReturnTypes => {
       )
     )
 
-    await updateTodo({ id, done, description, token: user.token })
+    updateTodo({ id, done, description, token: user.token })
       .catch((error) => {
         checkTokenError(error.message)
         setTodos(currentTodos => {
@@ -115,7 +136,9 @@ const useTodos = (): ReturnTypes => {
           newTodos[todoBeforeUpdateIndex] = todoBeforeUpdate
           return newTodos
         })
-        throw new Error('Failed to update todo')
+        const message = 'Failed to update todo'
+        alert.displayMessage({ message })
+        console.error(message)
       })
   }
 
@@ -123,13 +146,16 @@ const useTodos = (): ReturnTypes => {
     if (user === null) {
       return
     }
-    createTodo({ username: user.username, description, token: user.token })
+    await createTodo({ username: user.username, description, token: user.token })
       .then(todo => {
         setTodos(todos => [...todos, todo])
+        alert.displayMessage({ message: 'Todo created!' })
       })
       .catch(error => {
         checkTokenError(error.message)
-        throw new Error(error.message)
+        const message = 'Failed to add new todo'
+        alert.displayMessage({ message })
+        console.error(message)
       })
   }
 
@@ -166,6 +192,7 @@ const useTodos = (): ReturnTypes => {
     filterSelected,
     activeCount,
     doneCount: todos.length - activeCount,
+    alert,
     handleFilterChange,
     handleQuery,
     handleRemoveTodo,

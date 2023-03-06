@@ -10,9 +10,6 @@ interface Props {
 const Todos: React.FC<Props> = ({ todos, onRemoveTodo, onUpdateTodo }) => {
   const handleRemoveTodo = ({ id }: TodoId): void => {
     onRemoveTodo({ id })
-      .catch(error => {
-        console.error(error)
-      })
   }
 
   return (

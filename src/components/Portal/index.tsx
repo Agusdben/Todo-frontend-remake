@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 interface Props {
   children: React.ReactNode
-  elementID: 'modal'
+  elementID: 'modal' | 'alert'
 }
 
 const el = document.createElement('div')

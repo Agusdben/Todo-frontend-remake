@@ -15,8 +15,8 @@ export type TodoUser = Pick<Todo, 'user'>
 export type TodoIdDone = Pick<Todo, 'id' | 'done'>
 export type TodoIdDoneDescription = Pick<Todo, 'id' | 'done' | 'description'>
 
-export type UpdateTodoFn = ({ id, done, description }: TodoIdDoneDescription) => Promise<void>
-export type RemoveTodoFn = ({ id }: TodoId) => Promise<void>
+export type UpdateTodoFn = ({ id, done, description }: TodoIdDoneDescription) => void
+export type RemoveTodoFn = ({ id }: TodoId) => void
 
 export type FilterValue = typeof TODO_FILTERS[keyof typeof TODO_FILTERS]
 

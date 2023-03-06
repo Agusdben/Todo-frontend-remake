@@ -1,3 +1,4 @@
+import Alert from '../../components/Alert'
 import AppLayout from '../../components/AppLayout'
 import Button from '../../components/Button'
 import CreateTodo from '../../components/CreateTodo'
@@ -13,6 +14,7 @@ const HomePage = (): JSX.Element => {
     activeCount,
     filterSelected,
     doneCount,
+    alert,
     handleCreateTodo,
     handleFilterChange,
     handleClearDone,
@@ -65,6 +67,7 @@ const HomePage = (): JSX.Element => {
         onCancel={modalDeleteAllDone.handleModal}
         onDelete={handleClearDone}
       />
+      <Alert onClose={alert.onClose} isOpen={alert.isOpen} message={alert.message}/>
     </AppLayout>
   )
 }
