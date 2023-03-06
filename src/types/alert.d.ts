@@ -1,7 +1,7 @@
 export interface Alert {
   message: string
-  setMessage: React.Dispatch<React.SetStateAction<string>>
   isOpen: boolean
+  setMessage: React.Dispatch<React.SetStateAction<string>>
   onClose: () => void
   displayMessage: ({ message }: AlertMessage) => void
 }
