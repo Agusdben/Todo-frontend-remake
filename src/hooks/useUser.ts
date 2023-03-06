@@ -5,14 +5,15 @@ import { loginWithUsernameAndPassword } from '../services/user'
 import { type LoginFormFields } from '../types/login'
 import { type User } from '../types/user'
 
-interface ReturnedProps {
+interface ReturnType {
   user: User | null
   authenticating: boolean
   login: ({ password, username }: LoginFormFields) => Promise<void>
   checkTokenError: (error: string) => void
+  logout: () => void
 }
 
-const useUser = (): ReturnedProps => {
+const useUser = (): ReturnType => {
   const { user, setUser, authenticating } = useContext(UserContext)
 
   const login = async ({ password, username }: LoginFormFields): Promise<void> => {
@@ -34,6 +35,7 @@ const useUser = (): ReturnedProps => {
     user,
     authenticating,
     login,
+    logout,
     checkTokenError
   }
 }

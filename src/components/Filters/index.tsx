@@ -22,7 +22,7 @@ const Filters: React.FC<Props> = ({ filterSelected, onFilterChange, onQueryChang
   return (
     <ul className='flex gap-5 items-center flex-wrap'>
       {Object.values(TODO_FILTERS).map((value) => (
-        <li key={value} className=''>
+        <li key={value}>
           <button
             className={`p-2 hover:border-1 hover:border-primary ${filterSelected === value ? 'border-1 border-primary' : 'border-1 border-transparent '}`}
             onClick={() => { handleOnFilterSelected(value as FilterValue) }}
@@ -38,7 +38,7 @@ const Filters: React.FC<Props> = ({ filterSelected, onFilterChange, onQueryChang
           className='w-full min-w-[200px] bg-transparent border-1 border-primary p-2 outline-none '
           placeholder='Search todo'
         />
-        <div className=' px-2 self-stretch grid place-content-center bg-primary'>
+        <div className='px-2 self-stretch grid place-content-center bg-primary'>
           <MagnifyingGlassIcon fill={colors.black} className='text-2xl'/>
         </div>
       </li>

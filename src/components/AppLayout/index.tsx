@@ -1,3 +1,5 @@
+import AppFooter from '../AppFooter'
+import AppHeader from '../AppHeader'
 
 interface Props {
   children: React.ReactNode
@@ -5,12 +7,10 @@ interface Props {
 
 const AppLayout: React.FC<Props> = ({ children }) => {
   return (
-    <div className="max-w-screen min-h-screen overflow-x-hidden grid grid-rows-layout bg-black-900 text-white">
-      <header>
-        <h1>Hola</h1>
-      </header>
+    <div className="max-w-screen min-h-screen overflow-x-hidden grid gap-4 grid-rows-layout bg-black-900 text-white">
+      <AppHeader />
       <main className="p-2">{children}</main>
-      <footer>footer</footer>
+      <AppFooter />
     </div>
   )
 }
