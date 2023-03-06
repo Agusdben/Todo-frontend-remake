@@ -14,7 +14,7 @@ const Modal: React.FC<Props> = ({ children, onClose, isOpen, title = '' }) => {
       {isOpen
         ? (
         <section className='fixed top-0 left-0 w-screen h-screen grid text-white px-4 py-16'>
-          <article className='relative z-20 w-full max-h-full max-w-lg m-auto grid-rows-[auto_1fr] shadow-md shadow-primary overflow-auto bg-black'>
+          <article className='relative z-20 w-full max-h-full max-w-lg m-auto grid-rows-[auto_1fr] shadow-md shadow-primary overflow-auto bg-black scrollbar-thin scrollbar-thumb-primary scrollbar-track-black-700 scrollbar-thumb-rounded-sm'>
             <header className='sticky top-0 flex justify-between items-center text-2xl px-4 py-2 bg-primary '>
               <h2 className='text-black font-bold'>{title}</h2>
               <button

@@ -42,7 +42,7 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
   }
 
   return (
-    <div className='flex p-2 items-center gap-4 bg-black-500 break-words break-all'>
+    <div className='flex p-2 items-center gap-4 bg-black-700 break-words break-all'>
       <label className={`p-3 border-1 border-primary w-4 h-4 relative cursor-pointer ${!done ? 'hover:bg-primary' : ''}`}>
         {
           done && (
@@ -70,18 +70,21 @@ const Todo: React.FC<Props> = ({ id, description, done, user, onRemoveTodo, onUp
           : (
               <p
                 onClick={handleStartEditing}
-                className={`p-2 flex-1 flex border-1 border-transparent ${done ? 'line-through opacity-50' : 'hover:bg-black-700 cursor-text'}`}
+                className={`p-2 flex-1 flex border-1 border-transparent ${done ? 'line-through opacity-50' : 'hover:bg-black-500 cursor-text'}`}
               >
                 {description}
               </p>
             )
       }
+      {!done && (
+        <button className='p-2 hover:brightness-75' onClick={handleStartEditing}>
+          <PenToSquareIcon fill={colors.primary} />
+        </button>
+      )}
       <button className='p-2 hover:brightness-75' onClick={modalDelete.handleModal}>
         <TrashBinIcon fill={colors.primary} />
       </button>
-      <button className='p-2 hover:brightness-75' onClick={handleStartEditing}>
-        <PenToSquareIcon fill={colors.primary} />
-      </button>
+
       <ModalDelete
         modal={modalDelete}
         descriptions={[description]}

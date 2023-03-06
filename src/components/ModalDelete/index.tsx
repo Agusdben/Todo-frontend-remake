@@ -32,7 +32,7 @@ const ModalDelete: React.FC<Props> = ({ modal, descriptions, type, onDelete, onC
             {type}{descriptions.length !== 1 ? 's' : ''}{' '}
             permanently.
           </p>
-          <ul className='flex flex-col overflow-auto max-h-56 w-full max-w-xs bg-black-700 gap-3 px-2'>
+          <ul className='flex flex-col overflow-auto max-h-56 w-full max-w-xs bg-black-700 gap-3 px-2 scrollbar-thin scrollbar-thumb-primary scrollbar-track-black-700 scrollbar-thumb-rounded-sm'>
           {
             descriptions.map((desc, index) => (
               <li className='inline-block break-words p-1 max-w-full ' key={desc + index.toString()}>
