@@ -59,7 +59,9 @@ const CreateTodo: React.FC<Props> = ({ onSubmit }) => {
             className='w-full py-4 px-2  bg-transparent outline-none'
           />
         </div>
-        <button type='submit' className='p-2 bg-primary hover:brightness-90'><PaperPlaneIcon fill={colors.black}/></button>
+        <button type='submit' className='p-2 bg-primary hover:brightness-90' disabled={loading}>
+          <PaperPlaneIcon fill={colors.black}/>
+        </button>
       </form>
       {error !== '' && <ErrorMessage error={error}/>}
       {loading && <p className='text-primary'>Adding...</p>}
